@@ -17,7 +17,11 @@ import {
   deleteNote as deleteNoteMutation,
 } from "./graphql/mutations";
 
-const App = ({ signOut }) => {
+type Props = {
+  signOut: React.FunctionComponent
+};
+
+const App: React.FunctionComponent<Props> = ({ signOut }) => {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -25,14 +29,14 @@ const App = ({ signOut }) => {
   }, []);
 
   async function fetchNotes() {
-    const apiData = await API.graphql({ query: listNotes });
+    const apiData: any = await API.graphql({ query: listNotes });
     const notesFromAPI = apiData.data.listNotes.items;
     setNotes(notesFromAPI);
   }
 
-  async function createNote(event) {
+  async function createNote(event: React.FormEvent) {
     event.preventDefault();
-    const form = new FormData(event.target);
+    const form = new FormData(event.target as HTMLFormElement);
     const data = {
       name: form.get("name"),
       description: form.get("description"),
@@ -42,7 +46,7 @@ const App = ({ signOut }) => {
       variables: { input: data },
     });
     fetchNotes();
-    event.target.reset();
+    (event.target as HTMLFormElement).reset();
   }
 
   async function deleteNote({ id }) {
